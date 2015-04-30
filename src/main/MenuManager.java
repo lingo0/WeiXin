@@ -1,9 +1,13 @@
 package main;
 
-import Util.WeiXinUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import po.*;
+import po.Button;
+import po.CommonButton;
+import po.ComplexButton;
+import po.Menu;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * 菜单管理类
@@ -13,26 +17,34 @@ import po.*;
 public class MenuManager {
 	private static Logger log = LoggerFactory.getLogger(MenuManager.class);
 
-	public static void main(String[] args) {
-		//第三方用户唯一凭证
-		String appId = "wx635dff39af49ae3e";
-		//凭证密钥
-		String appSecret = "e24878fb5e43debdb1a9520caba11f21";
+	public static void main(String[] args) throws UnsupportedEncodingException {
+//		//第三方用户唯一凭证
+//		String appId = "wx635dff39af49ae3e";
+//		//凭证密钥
+//		String appSecret = "e24878fb5e43debdb1a9520caba11f21";
+//
+//		//调用接口获取access——token
+//		AccessToken accessToken = WeiXinUtil.getAccessToken(appId,appSecret);
+//
+//		if (accessToken != null) {
+//			//调用接口创建菜单
+//			int result = WeiXinUtil.createMenu(getMenu(), accessToken.getToken());
+//
+//			//判断菜单创建结果
+//			if ( 0 == result) {
+//				log.info("菜单创建成功");
+//			} else {
+//				log.info("菜单创建失败，错误码：" + result);
+//			}
+//		}
 
-		//调用接口获取access——token
-		AccessToken accessToken = WeiXinUtil.getAccessToken(appId,appSecret);
 
-		if (accessToken != null) {
-			//调用接口创建菜单
-			int result = WeiXinUtil.createMenu(getMenu(), accessToken.getToken());
+//		String t2 = new String("你漂亮吗".getBytes("ISO_8859_1"),"GBK");
 
-			//判断菜单创建结果
-			if ( 0 == result) {
-				log.info("菜单创建成功");
-			} else {
-				log.info("菜单创建失败，错误码：" + result);
-			}
-		}
+		String url = "%E4%BD%A0%E6%BC%82%E4%BA%AE%E4%B9%88";
+
+		String conternyt = "你漂亮么";
+		System.out.print(java.net.URLEncoder.encode(conternyt));
 
 	}
 

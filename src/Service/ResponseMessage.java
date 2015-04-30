@@ -38,7 +38,7 @@ public class ResponseMessage {
 		sb.append("欢迎您的关注！可以回复数字\n");
 		sb.append("1、天气预报\n");
 		sb.append("2、上课预报\n");
-		sb.append("3、聊天机器人使用说明\n\n");
+		sb.append("3、聊天机器人小L使用说明\n\n");
 		sb.append("回复？调出此菜单");
 		return sb.toString();
 	}

@@ -73,7 +73,9 @@ public class WeiXinServlet extends HttpServlet {
 				}else if ("?".equals(content) || "？".equals(content)) {
 					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.menuText());
 				} else if ("3".equals(content)) {
-					message = MessageUtil.initArticle(toUserName,fromUserName,ResponseMessage.articlesMessage());
+					String instruction = "可以回复：你好或你是谁和小L聊天\n 它的知识很丰富哦，自己试试看吧";
+					message = MessageUtil.initText(toUserName, fromUserName,instruction);
+//					message = MessageUtil.initArticle(toUserName,fromUserName,ResponseMessage.articlesMessage());
 				}
 				else {
 					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.robotMessage(content));
