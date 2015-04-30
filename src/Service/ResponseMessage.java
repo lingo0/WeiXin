@@ -1,6 +1,8 @@
 package Service;
 
 import Util.DataUtil;
+import Util.MessageUtil;
+import Util.RobotUtil;
 import Util.WeiXinUtil;
 import message.Article;
 import net.sf.json.JSONException;
@@ -11,6 +13,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import po.robot.NewsRobotMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,8 +40,7 @@ public class ResponseMessage {
 		StringBuffer sb = new StringBuffer();
 		sb.append("欢迎您的关注！可以回复数字\n");
 		sb.append("1、天气预报\n");
-		sb.append("2、上课预报\n");
-		sb.append("3、聊天机器人小L使用说明\n\n");
+		sb.append("2、聊天机器人小L使用说明\n\n");
 		sb.append("回复？调出此菜单");
 		return sb.toString();
 	}
@@ -192,32 +194,57 @@ public class ResponseMessage {
 		return articleList;
 	}
 
-	private static final String  roboturl = "http://www.tuling123.com/openapi/api?key=KEY&info=CONTENT";
+	private static final String  roboturl = "http://www.tuling123.com/openapi/api?key=KEY&info=CONTENT&userid=USERID";
 
-	public static String robotMessage(String content) throws UnsupportedEncodingException {
+	/**
+	 *
+	 * @param content
+	 * @param toUserName
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String robotMessage(String toUserName, String fromUserName, String content) throws UnsupportedEncodingException {
 		String key = "1878d1501ea2bc334748a1dea149c755";
 
 		//转换编码
 //		String t2 = java.net.URLEncoder.encode(content);
 		String contUtf8 = URLEncoder.encode(content, "utf-8");
-		String url = roboturl.replace("KEY", key).replace("CONTENT", contUtf8);
+		String url = roboturl.replace("KEY", key).replace("CONTENT", contUtf8).replace("userid",toUserName);
 
 		String text = null;
+//		StringBuffer message = new StringBuffer();
 
-			//获得Json格式数据
-			JSONObject jsonObject = WeiXinUtil.httpRequest(url, "GET");
+		//获得Json格式数据
+		JSONObject jsonObject = WeiXinUtil.httpRequest(url, "GET");
 
-			//请求成功
-			if (null != jsonObject){
-				try {
-					String code = jsonObject.getString("code");
-					text = jsonObject.getString("text");
+		//请求成功
+		if (null != jsonObject){
+			try {
+				int code = jsonObject.getInt("code");
+				text = jsonObject.getString("text");
+//				message.append(text);
 
-				} catch (JSONException e) {
-					// 获取token失败
-					log.error("获取失败 errcode:{}", jsonObject.getInt("code"));
+				switch (code){
+					case  RobotUtil.robotMessage_NEWS:
+						//将json格式转换成newsRobot对象
+						NewsRobotMessage newsRobotMessage = RobotUtil.newsJsonToString(jsonObject);
+
+						//将newsRobot对象转变长微信news对象
+						List<Article> articles = RobotUtil.nesRobotToArticleList(newsRobotMessage);
+						text = MessageUtil.initArticle(toUserName,fromUserName,articles);
+						break;
+					default:
+						text = MessageUtil.initText(toUserName, fromUserName, text);
+						break;
 				}
+
+
+
+			} catch (JSONException e) {
+				// 获取token失败
+				log.error("获取失败 errcode:{}", jsonObject.getInt("code"));
 			}
+		}
 
 		return text;
 	}
