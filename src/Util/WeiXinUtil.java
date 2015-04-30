@@ -12,22 +12,64 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.ConnectException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchProviderException;
 
 /**
  * 公众平台通用接口类
+ *
  * Created by ling on 2015/4/29.
  */
 public class WeiXinUtil {
 	private static Logger log = LoggerFactory.getLogger(WeiXinUtil.class);
+
+	/**
+	 * 发起http请求获取Jason格式数据
+	 * @param requestUrl 请求地址
+	 * @param requestMethod 请求方式
+	 * @return 返回Jason格式数据
+	 */
+	public static JSONObject httpRequest(String requestUrl, String requestMethod) {
+		JSONObject jsonObject = null;
+
+		try {
+			URL robotUrl = new URL(requestUrl);
+
+			//建立连接
+			URLConnection conn = robotUrl.openConnection();
+
+			//获取请求得到的数据
+			InputStream inputStream = conn.getInputStream();
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+
+			//将数据转成Json格式
+			StringBuffer buffer = new StringBuffer();
+			String str = null;
+			while ((str = bufferedReader.readLine()) != null){
+				buffer.append(str);
+			}
+
+			//释放资源
+			bufferedReader.close();
+			inputStreamReader.close();
+			inputStream.close();
+			inputStream = null;
+			jsonObject = JSONObject.fromObject(buffer.toString());
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+
+
+
 
 	/**
 	 * 发起https请求并获取数据
@@ -37,7 +79,8 @@ public class WeiXinUtil {
 	 * @param outputStr 提交数据
 	 * @return JSONObject(通过JSONObject.get(key)的方式获取json对象的属性值)
 	 */
-	public static JSONObject httpRequest(String requestUrl,String requestMethod, String outputStr) {
+	public static JSONObject httpsRequest(String requestUrl, String requestMethod, String outputStr) {
+
 		JSONObject jsonObject = null;
 		StringBuffer buffer = new StringBuffer();
 
@@ -110,6 +153,7 @@ public class WeiXinUtil {
 			log.error("https request error:{}", e);
 		}
 		return jsonObject;
+
 	}
 
 	private final static String access_token_url
@@ -127,7 +171,7 @@ public class WeiXinUtil {
 		AccessToken accessToken = null;
 
 		String requestUrl = access_token_url.replace("APPID", appid).replace("APPSECRET", appsecret);
-		JSONObject jsonObject = httpRequest(requestUrl, "GET", null);
+		JSONObject jsonObject = httpsRequest(requestUrl, "GET", null);
 		//请求成功
 		if (null != jsonObject){
 			try {
@@ -161,8 +205,9 @@ public class WeiXinUtil {
 		String url = menu_create_url.replace("ACCESS_TOKEN", accessToken);
 		//将菜单对象转换成Json字符串
 		String jsonMenu = JSONObject.fromObject(menu).toString();
+
 		//调用接口创建菜单
-		JSONObject jsonObject = httpRequest(url, "POST", jsonMenu);
+		JSONObject jsonObject = httpsRequest(url, "POST", jsonMenu);
 
 		if (null != jsonObject) {
 			if (0 != jsonObject.getInt("errcode")) {
