@@ -67,18 +67,20 @@ public class WeiXinServlet extends HttpServlet {
 					//请求天气预报
 					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.getWeather());
 
-				}else if ("2".equals(content)) {
-					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.ClassMessage());
-
 				}else if ("?".equals(content) || "？".equals(content)) {
 					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.menuText());
-				} else if ("3".equals(content)) {
-					String instruction = "可以回复：你好或你是谁和小L聊天\n 它的知识很丰富哦，自己试试看吧";
-					message = MessageUtil.initText(toUserName, fromUserName,instruction);
+				} else if ("2".equals(content)) {
+					StringBuffer instructions = new StringBuffer();
+					instructions.append("你好，我是小L，欢迎来和我聊天：");
+					instructions.append("1、回复“看新闻”，可以获取实时热门新闻。\n");
+					instructions.append("如回复“娱乐新闻”。\n\n");
+					instructions.append("随便说点什么和小L开始聊天吧");
+					message = MessageUtil.initText(toUserName, fromUserName,instructions.toString());
 //					message = MessageUtil.initArticle(toUserName,fromUserName,ResponseMessage.articlesMessage());
 				}
 				else {
-					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.robotMessage(content));
+					message = ResponseMessage.robotMessage(toUserName,fromUserName,content);
+//					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.robotMessage(toUserName,fromUserName,content));
 				}
 
 			} else if (MessageUtil.MESSAGE_EVENT.equals(msgType)) { //当用户第一次关注时
@@ -88,6 +90,7 @@ public class WeiXinServlet extends HttpServlet {
 				}
 
 			} else {
+
 				message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.menuText());
 			}
 
