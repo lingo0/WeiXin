@@ -1,5 +1,6 @@
 package Myservlet;
 
+import Service.ResponseMessage;
 import Util.CheckUtil;
 import Util.MessageUtil;
 import org.dom4j.DocumentException;
@@ -56,35 +57,40 @@ public class WeiXinServlet extends HttpServlet {
 			String content = map.get("Content");
 
 
+
 			String message = null;
 
 
 			if (MessageUtil.MESSAGE_TEXT.equals(msgType)){ //如果是文本则返回消息
+
 				if ("1".equals(content) || "天气".equals(content)) {
 					//请求天气预报
-					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.getWeather());
+					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.getWeather());
 
 				}else if ("2".equals(content)) {
-					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.ClassMessage());
+					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.ClassMessage());
 
 				}else if ("?".equals(content) || "？".equals(content)) {
-					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
-				} else {
-					message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.menuText());
+				} else if ("3".equals(content)) {
+					message = MessageUtil.initArticle(toUserName,fromUserName,ResponseMessage.articlesMessage());
+				}
+				else {
+					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.robotMessage(content));
 				}
 
-			} else if (MessageUtil.MESSAGE_EVENT.equals(msgType)) {
+			} else if (MessageUtil.MESSAGE_EVENT.equals(msgType)) { //当用户第一次关注时
 				String eventType = map.get("Event");
 				if (MessageUtil.MESSAGE_SUBSCRIBLE.equals(eventType)) {
-					message = MessageUtil.initText(toUserName, fromUserName,MessageUtil.menuText());
+					message = MessageUtil.initText(toUserName, fromUserName,ResponseMessage.menuText());
 				}
 
 			} else {
-				message = MessageUtil.initText(toUserName, fromUserName, MessageUtil.menuText());
+				message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.menuText());
 			}
 
 
-//			System.out.println(message);
+			System.out.println(message);
 			out.print(message);//返回给微信后台
 		} catch (DocumentException e) {
 			e.printStackTrace();
