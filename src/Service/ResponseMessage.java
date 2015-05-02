@@ -13,7 +13,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import po.robot.NewsRobotMessage;
+import po.robot.NewsArticl;
+import po.robot.RobotMessage;
+import po.robot.Train;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,12 +40,23 @@ public class ResponseMessage {
 	 */
 	public static String menuText() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("欢迎您的关注！可以回复数字\n");
-		sb.append("1、天气预报\n");
-		sb.append("2、聊天机器人小L使用说明\n\n");
-		sb.append("回复？调出此菜单");
+		sb.append("欢迎您的关注！可以回复数字查看各类使用说明\n");
+		sb.append("1、课表查询\n");
+		sb.append("2、四六级查询\n");
+		sb.append("3、登陆学校服务系统\n");
+
+		sb.append("4、天气查询\n");
+		sb.append("5、快递查询\n");
+		sb.append("6、列车航班查询\n");
+
+		sb.append("7、看新闻\n");
+		sb.append("8、简易计算器\n");
+		sb.append("9、聊天机器人小L使用说明\n");
+		sb.append("回复？调出此使用说明");
 		return sb.toString();
 	}
+
+
 
 	public static String ClassMessage() {
 		StringBuffer sb = new StringBuffer();
@@ -209,7 +222,7 @@ public class ResponseMessage {
 		//转换编码
 //		String t2 = java.net.URLEncoder.encode(content);
 		String contUtf8 = URLEncoder.encode(content, "utf-8");
-		String url = roboturl.replace("KEY", key).replace("CONTENT", contUtf8).replace("userid",toUserName);
+		String url = roboturl.replace("KEY", key).replace("CONTENT", contUtf8).replace("USERID",fromUserName);
 
 		String text = null;
 //		StringBuffer message = new StringBuffer();
@@ -225,14 +238,35 @@ public class ResponseMessage {
 //				message.append(text);
 
 				switch (code){
-					case  RobotUtil.robotMessage_NEWS:
+					case  RobotUtil.robotMessage_NEWS: //回复的是新闻
 						//将json格式转换成newsRobot对象
-						NewsRobotMessage newsRobotMessage = RobotUtil.newsJsonToString(jsonObject);
+						RobotMessage<NewsArticl> newsRobotMessage = RobotUtil.newsJsonToString(jsonObject);
 
 						//将newsRobot对象转变长微信news对象
 						List<Article> articles = RobotUtil.nesRobotToArticleList(newsRobotMessage);
 						text = MessageUtil.initArticle(toUserName,fromUserName,articles);
 						break;
+					case RobotUtil.robotMessage_TRAIN: //回复的是火车列次
+						//将json格式的数据转成trainRobot对象
+						RobotMessage<Train> trainRobotMessage = RobotUtil.trainJsonToString(jsonObject);
+
+						//将trainRobot对象转换成微信news对象
+						List<Article> trains = RobotUtil.trainRobotToArticleList(trainRobotMessage);
+						text = MessageUtil.initArticle(toUserName,fromUserName,trains);
+						break;
+					case RobotUtil.robotMessage_PLANT://回复的是飞机航班信息
+						String planturl
+								= "<a href=\"http://touch.qunar.com/h5/flight/flightlist?bd_source=chongdong&startCity=&destCity=&startDate=&backDate=&flightType=oneWay&priceSortType=1\">请点击查您所需的航班信息</a>";
+						text = MessageUtil.initText(toUserName,fromUserName,planturl);
+
+//						//将json格式的数据转成trainRobot对象
+//						RobotMessage<Plant> plantRobotMessage = RobotUtil.plantJsonToString(jsonObject);
+//						//将trainRobot对象转换成微信news对象
+//						List<Article> plants = RobotUtil.plantRobotToArticleList(plantRobotMessage);
+//						text = MessageUtil.initArticle(toUserName,fromUserName,plants);
+						break;
+
+
 					default:
 						text = MessageUtil.initText(toUserName, fromUserName, text);
 						break;
