@@ -41,10 +41,6 @@ public class MenuManager {
 
 //		String t2 = new String("你漂亮吗".getBytes("ISO_8859_1"),"GBK");
 
-		String url = "%E4%BD%A0%E6%BC%82%E4%BA%AE%E4%B9%88";
-
-		String conternyt = "你漂亮么";
-		System.out.print(java.net.URLEncoder.encode(conternyt));
 
 	}
 

@@ -207,8 +207,4 @@ public class RobotUtil {
 
 
 
-
-	public static List<Article> plantRobotToArticleList(RobotMessage<Plant> plantRobotMessage) {
-		return null;
-	}
 }

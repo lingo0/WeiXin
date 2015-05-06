@@ -31,6 +31,7 @@ public class CheckUtil {
 
 	}
 
+	//Sha1加密方式
 	public static String getSha1(String str){
 		if (null == str || 0 == str.length()){
 			return null;

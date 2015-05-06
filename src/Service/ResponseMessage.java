@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import po.robot.NewsArticl;
 import po.robot.RobotMessage;
 import po.robot.Train;
+import po.robot.linkRobotMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,17 +62,25 @@ public class ResponseMessage {
 	public static String ClassMessage() {
 		StringBuffer sb = new StringBuffer();
 		String week = DataUtil.getWeekOfDate(new Date());
-		sb.append("今天是" + week +"，");
+		sb.append("今天是" + week +"，您有如下课程：\n");
 
-		String Class = new String();
+		String Class;
 		if ("星期一".equals(week)){
-			Class = "有英语课，下午2点在两江院405";
+			Class = "【上午8:00-11:20】英语1班，钱激扬，两江院407\n" + "【上午8:00-11:20】英语2班，周明亚，两江院405\n"
+					+ "【下午2:00-5:20】英语3班，钱激扬，两江院407\n" + "【下午2:00-5:20】英语4班，杨才元，两江院405\n";
 		} else if ("星期二".equals(week)) {
-			Class = "有计算机网络课，下午2点在两江院401";
-		} else if ("星期五".equals(week)){
-			Class = "有算法课，上午九点四十五，下午两点在两江院403";
+			Class = "【下午2:00-5:20】高级计算机网络编程，张三丰，两江院401\n "
+					+ "【晚上6:30-20:05】计算机网络安全，周明中，两江院401\n";
+		} else if ("星期三".equals(week)) {
+			Class = "【下午2:00-4:30】计算机网络体系结构，董永强，两江院401\n";
+		}else if ("星期四".equals(week)) {
+			Class = "【上午8:00-10:20】计算机网络体系结构，董永强，两江院401\n" + "【上午8:00-11:20】通信网和计算机网络，方宁生，两江院405\n"
+					+"【下午2:00-5:20】数据库系统及实现原理，崇志宏，两江院401\n";
+		}else if ("星期五".equals(week)){
+			Class = "【上午9:45-11:20】算法分析与设计1班，吕建华，两江院401\n" + "【上午9:45-11:20】算法分析与设计2班，倪庆剑，两江院403\n"
+					+ "【下午2:00-4:30】算法分析与设计1班，吕建华，两江院401\n" + "【下午2:00-4:30】算法分析与设计2班，倪庆剑，两江院403\n";
 		} else {
-			Class = "今天无课，也要加油";
+			Class = "无课，但也要加油";
 		}
 
 		sb.append(Class);
@@ -217,7 +226,8 @@ public class ResponseMessage {
 	 * @throws UnsupportedEncodingException
 	 */
 	public static String robotMessage(String toUserName, String fromUserName, String content) throws UnsupportedEncodingException {
-		String key = "1878d1501ea2bc334748a1dea149c755";
+		String key = "0853034929dfc283feba95451331b926";
+//		String key = "1878d1501ea2bc334748a1dea149c755";
 
 		//转换编码
 //		String t2 = java.net.URLEncoder.encode(content);
@@ -265,8 +275,13 @@ public class ResponseMessage {
 //						List<Article> plants = RobotUtil.plantRobotToArticleList(plantRobotMessage);
 //						text = MessageUtil.initArticle(toUserName,fromUserName,plants);
 						break;
-
-
+					case RobotUtil.robotMessage_WEBURL://回复是是链接
+						linkRobotMessage linkRobotMessage = new linkRobotMessage();
+						linkRobotMessage.setUrl(jsonObject.getString("url"));
+						StringBuffer message = new StringBuffer();
+						message.append(text + "\n");
+						message.append(linkRobotMessage.getUrl());
+						text = message.toString();
 					default:
 						text = MessageUtil.initText(toUserName, fromUserName, text);
 						break;
