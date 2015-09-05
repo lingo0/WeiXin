@@ -18,29 +18,7 @@ public class MenuManager {
 	private static Logger log = LoggerFactory.getLogger(MenuManager.class);
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-//		//第三方用户唯一凭证
-//		String appId = "wx635dff39af49ae3e";
-//		//凭证密钥
-//		String appSecret = "e24878fb5e43debdb1a9520caba11f21";
-//
-//		//调用接口获取access——token
-//		AccessToken accessToken = WeiXinUtil.getAccessToken(appId,appSecret);
-//
-//		if (accessToken != null) {
-//			//调用接口创建菜单
-//			int result = WeiXinUtil.createMenu(getMenu(), accessToken.getToken());
-//
-//			//判断菜单创建结果
-//			if ( 0 == result) {
-//				log.info("菜单创建成功");
-//			} else {
-//				log.info("菜单创建失败，错误码：" + result);
-//			}
-//		}
-
-
-//		String t2 = new String("你漂亮吗".getBytes("ISO_8859_1"),"GBK");
-
+		//单元测试
 
 	}
 
