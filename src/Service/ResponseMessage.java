@@ -37,7 +37,7 @@ public class ResponseMessage {
 
 	/**
 	 * 主菜单
-	 * @return
+	 * @return 菜单字符串
 	 */
 	public static String menuText() {
 		StringBuffer sb = new StringBuffer();
@@ -57,8 +57,10 @@ public class ResponseMessage {
 		return sb.toString();
 	}
 
-
-
+	/**
+	 * 课程预报模板
+	 * @return 模板字符串
+	 */
 	public static String ClassMessage() {
 		StringBuffer sb = new StringBuffer();
 		String week = DataUtil.getWeekOfDate(new Date());
@@ -131,45 +133,36 @@ public class ResponseMessage {
 		List<Element> listWeatherData =  rootWeatherData.elements();
 
 		Map<String,String> mapResults = new HashMap<String, String>();//currentCity,pm25
-//		Map<String,String> mapWeatherData = new HashMap<String, String>();//date,weather,wind,temperature
 
 		for (Element e:listResults){
 			mapResults.put(e.getName(), e.getText());
 		}
 
-//		for (Element e:listWeatherData){
-//			mapWeatherData.put(e.getName(), e.getText());
-//		}
 
 		for (Element e:listWeatherData){
 			putAdd(e.getName(), e.getText());
 		}
 
-//		ins.close();
 
 		String pm25 = mapResults.get("pm25");
 		String currentCity = mapResults.get("currentCity");
 
-//		String date = mapWeatherData.get("date");
 		ArrayList<String> dateArray = m.get("date");
 		String date0 = dateArray.get(0);
 		String date1 = dateArray.get(1);
 		String date2 = dateArray.get(2);
 
-//      String weather = mapWeatherData.get("weather");
 		ArrayList<String> weatherArray = m.get("weather");
 		String weather0 = weatherArray.get(0);
 		String weather1 = weatherArray.get(1);
 		String weather2 = weatherArray.get(2);
 
 
-//		String wind = mapWeatherData.get("wind");
 		ArrayList<String> windArray = m.get("wind");
 		String wind0 = windArray.get(0);
 		String wind1 = windArray.get(1);
 		String wind2 = windArray.get(2);
 
-//		String temperature = mapWeatherData.get("temperature");
 		ArrayList<String> temperatureArray = m.get("temperature");
 		String temperature0 = temperatureArray.get(0);
 		String temperature1 = temperatureArray.get(1);
@@ -219,23 +212,19 @@ public class ResponseMessage {
 	private static final String  roboturl = "http://www.tuling123.com/openapi/api?key=KEY&info=CONTENT&userid=USERID";
 
 	/**
-	 *
-	 * @param content
-	 * @param toUserName
+	 * 自动回复机器人
+	 * @param content 收到的内容
+	 * @param toUserName 回复给谁
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
 	public static String robotMessage(String toUserName, String fromUserName, String content) throws UnsupportedEncodingException {
 		String key = "0853034929dfc283feba95451331b926";
-//		String key = "1878d1501ea2bc334748a1dea149c755";
 
-		//转换编码
-//		String t2 = java.net.URLEncoder.encode(content);
 		String contUtf8 = URLEncoder.encode(content, "utf-8");
 		String url = roboturl.replace("KEY", key).replace("CONTENT", contUtf8).replace("USERID",fromUserName);
 
 		String text = null;
-//		StringBuffer message = new StringBuffer();
 
 		//获得Json格式数据
 		JSONObject jsonObject = WeiXinUtil.httpRequest(url, "GET");
@@ -245,7 +234,6 @@ public class ResponseMessage {
 			try {
 				int code = jsonObject.getInt("code");
 				text = jsonObject.getString("text");
-//				message.append(text);
 
 				switch (code){
 					case  RobotUtil.robotMessage_NEWS: //回复的是新闻
@@ -269,11 +257,6 @@ public class ResponseMessage {
 								= "<a href=\"http://touch.qunar.com/h5/flight/flightlist?bd_source=chongdong&startCity=&destCity=&startDate=&backDate=&flightType=oneWay&priceSortType=1\">请点击查您所需的航班信息</a>";
 						text = MessageUtil.initText(toUserName,fromUserName,planturl);
 
-//						//将json格式的数据转成trainRobot对象
-//						RobotMessage<Plant> plantRobotMessage = RobotUtil.plantJsonToString(jsonObject);
-//						//将trainRobot对象转换成微信news对象
-//						List<Article> plants = RobotUtil.plantRobotToArticleList(plantRobotMessage);
-//						text = MessageUtil.initArticle(toUserName,fromUserName,plants);
 						break;
 					case RobotUtil.robotMessage_WEBURL://回复是是链接
 						linkRobotMessage linkRobotMessage = new linkRobotMessage();
