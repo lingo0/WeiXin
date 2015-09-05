@@ -14,13 +14,14 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 /**
+ * 用于和微信后台交互
+ *
  * Created by ling on 2015/4/28.
  */
 public class WeiXinServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//		super.doGet(req, resp);
 		String signature = req.getParameter("signature");
 		String timestamp = req.getParameter("timestamp");
 		String nonce = req.getParameter("nonce");
@@ -42,8 +43,6 @@ public class WeiXinServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//		super.doPost(req, resp);
-
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 
@@ -61,8 +60,6 @@ public class WeiXinServlet extends HttpServlet {
 			if (MessageUtil.MESSAGE_TEXT.equals(msgType)){ //如果是文本则返回消息
 
 				if ("1".equals(content)) {
-					//请求天气预报
-//					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.getWeather());
 					//课表查询
 					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.ClassMessage());
 
@@ -135,13 +132,11 @@ public class WeiXinServlet extends HttpServlet {
 					instructions.append("随便说点什么和小L开始聊天吧\n");
 					instructions.append("回复“?”显示主菜单");
 					message = MessageUtil.initText(toUserName, fromUserName,instructions.toString());
-//					message = MessageUtil.initArticle(toUserName,fromUserName,ResponseMessage.articlesMessage());
 				}else if ("?".equals(content) || "？".equals(content) || "你会干嘛".equals(content)) {
 					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.menuText());
 				}
 				else {
 					message = ResponseMessage.robotMessage(toUserName,fromUserName,content);
-//					message = MessageUtil.initText(toUserName, fromUserName, ResponseMessage.robotMessage(toUserName,fromUserName,content));
 				}
 
 			} else if (MessageUtil.MESSAGE_EVENT.equals(msgType)) { //当用户第一次关注时
